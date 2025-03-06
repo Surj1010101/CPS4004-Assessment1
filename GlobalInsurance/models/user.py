@@ -3,9 +3,7 @@ from sqlite3 import Error
 import bcrypt
 
 def create_connection(db_file):
-    """ create a database connection to the SQLite database
-        specified by db_file
-    """
+    """Create a database connection to the SQLite database specified by db_file."""
     conn = None
     try:
         conn = sqlite3.connect(db_file)
@@ -15,10 +13,10 @@ def create_connection(db_file):
 
 def add_user(conn, user):
     """
-    Create a new user
-    :param conn:
-    :param user:
-    :return:
+    Create a new user.
+    :param conn: Database connection
+    :param user: Tuple containing user details
+    :return: Last row id of the inserted user
     """
     sql = ''' INSERT INTO users(username, password, role)
               VALUES(?,?,?) '''
@@ -30,11 +28,11 @@ def add_user(conn, user):
 
 def authenticate_user(conn, username, password):
     """
-    Authenticate a user
-    :param conn:
-    :param username:
-    :param password:
-    :return:
+    Authenticate a user.
+    :param conn: Database connection
+    :param username: Username
+    :param password: Password
+    :return: User details if authentication is successful, None otherwise
     """
     sql = ''' SELECT * FROM users WHERE username = ? '''
     cur = conn.cursor()

@@ -2,9 +2,7 @@ import sqlite3
 from sqlite3 import Error
 
 def create_connection(db_file):
-    """ create a database connection to the SQLite database
-        specified by db_file
-    """
+    """Create a database connection to the SQLite database specified by db_file."""
     conn = None
     try:
         conn = sqlite3.connect(db_file)
@@ -13,8 +11,7 @@ def create_connection(db_file):
     return conn
 
 def create_table(conn, create_table_sql):
-    """ create a table from the create_table_sql statement
-    """
+    """Create a table from the create_table_sql statement."""
     try:
         c = conn.cursor()
         c.execute(create_table_sql)
@@ -22,8 +19,7 @@ def create_table(conn, create_table_sql):
         print(e)
 
 def close_connection(conn):
-    """ close the database connection
-    """
+    """Close the database connection."""
     if conn:
         conn.close()
 
@@ -58,24 +54,17 @@ def main():
                                      role text NOT NULL
                                  );"""
 
-    # create a database connection
+    # Created a databae connetion
     conn = create_connection(database)
 
-
+    # Create tables
     if conn is not None:
-        # created claims table
         create_table(conn, sql_create_claims_table)
-
-        # creatd policies table
         create_table(conn, sql_create_policies_table)
-
-        #usersS table
         create_table(conn, sql_create_users_table)
-
-
         close_connection(conn)
     else:
-        print("Error! cannot create the database connection.")
+        print("Error! Cannot create the database connection.")
 
 if __name__ == '__main__':
     main()

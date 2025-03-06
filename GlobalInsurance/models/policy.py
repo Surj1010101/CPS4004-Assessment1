@@ -2,9 +2,7 @@ import sqlite3
 from sqlite3 import Error
 
 def create_connection(db_file):
-    """ create a database connection to the SQLite database
-        specified by db_file
-    """
+    """Create a database connection to the SQLite database specified by db_file."""
     conn = None
     try:
         conn = sqlite3.connect(db_file)
@@ -14,10 +12,10 @@ def create_connection(db_file):
 
 def add_policy(conn, policy):
     """
-    Create a new policy
-    :param conn:
-    :param policy:
-    :return:
+    Create a new policy.
+    :param conn: Database connection
+    :param policy: Tuple containing policy details
+    :return: Last row id of the inserted policy
     """
     sql = ''' INSERT INTO policies(policy_number, coverage_details, policy_limits)
               VALUES(?,?,?) '''
@@ -28,10 +26,9 @@ def add_policy(conn, policy):
 
 def update_policy(conn, policy):
     """
-    Update an existing policy
-    :param conn:
-    :param policy:
-    :return:
+    Update an existing policy.
+    :param conn: Database connection
+    :param policy: Tuple containing updated policy details
     """
     sql = ''' UPDATE policies
               SET policy_number = ?,
