@@ -54,10 +54,10 @@ def main():
                                      role text NOT NULL
                                  );"""
 
-    # Created a databae connetion
+    # Created a datbase conection
     conn = create_connection(database)
 
-    # Create tables
+    # Created tables
     if conn is not None:
         create_table(conn, sql_create_claims_table)
         create_table(conn, sql_create_policies_table)
