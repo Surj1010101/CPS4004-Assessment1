@@ -10,61 +10,77 @@ def create_connection(db_file):
         print(e)
     return conn
 
-def create_table(conn, create_table_sql):
-    """Create a table from the create_table_sql statement."""
+def create_tables(conn):
+    """Create tables for claims, policies, users, and an optional audit_logs table."""
+    sql_create_claims_table = """
+    CREATE TABLE IF NOT EXISTS claims (
+        id INTEGER PRIMARY KEY,
+        claim_number TEXT NOT NULL,
+        date_of_claim TEXT,
+        type_of_claim TEXT,
+        description_of_accident TEXT,
+        date_of_incident TEXT,
+        location TEXT,
+        incident_report TEXT,
+        claim_amount REAL,
+        approved_amount REAL,
+        payment_details TEXT,
+        claim_status TEXT,       -- e.g. "Pending", "Approved", "Rejected"
+        resolution_notes TEXT,
+        settlement_date TEXT
+    );
+    """
+
+    sql_create_policies_table = """
+    CREATE TABLE IF NOT EXISTS policies (
+        id INTEGER PRIMARY KEY,
+        policy_number TEXT NOT NULL,
+        coverage_details TEXT,
+        policy_limits TEXT,
+        premium_amount REAL,
+        payment_schedule TEXT,
+        outstanding_payments REAL,
+        beneficiary_info TEXT,
+        coverage_exclusions TEXT
+    );
+    """
+
+    sql_create_users_table = """
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        role TEXT NOT NULL       
+    );
+    """
+
+    sql_create_audit_table = """
+    CREATE TABLE IF NOT EXISTS audit_logs (
+        id INTEGER PRIMARY KEY,
+        user_id INTEGER,
+        action TEXT,
+        timestamp TEXT
+    );
+    """
+
     try:
-        c = conn.cursor()
-        c.execute(create_table_sql)
+        cur = conn.cursor()
+        cur.execute(sql_create_claims_table)
+        cur.execute(sql_create_policies_table)
+        cur.execute(sql_create_users_table)
+        cur.execute(sql_create_audit_table)
+        conn.commit()
     except Error as e:
         print(e)
 
-def close_connection(conn):
-    """Close the database connection."""
-    if conn:
-        conn.close()
-
 def main():
-    database = r"global_insurance.db"
-
-    sql_create_claims_table = """ CREATE TABLE IF NOT EXISTS claims (
-                                     id integer PRIMARY KEY,
-                                     claim_number text NOT NULL,
-                                     date_of_claim text,
-                                     type_of_claim text,
-                                     description_of_accident text,
-                                     date_of_incident text,
-                                     location text,
-                                     incident_report text,
-                                     claim_amount real,
-                                     approved_amount real,
-                                     payment_details text
-                                 ); """
-
-    sql_create_policies_table = """CREATE TABLE IF NOT EXISTS policies (
-                                     id integer PRIMARY KEY,
-                                     policy_number text NOT NULL,
-                                     coverage_details text,
-                                     policy_limits text
-                                 );"""
-
-    sql_create_users_table = """CREATE TABLE IF NOT EXISTS users (
-                                     id integer PRIMARY KEY,
-                                     username text NOT NULL,
-                                     password text NOT NULL,
-                                     role text NOT NULL
-                                 );"""
-
-    # Created a datbase conection
+    database = "global_insurance.db"
     conn = create_connection(database)
-
-    # Created tables
-    if conn is not None:
-        create_table(conn, sql_create_claims_table)
-        create_table(conn, sql_create_policies_table)
-        create_table(conn, sql_create_users_table)
-        close_connection(conn)
+    if conn:
+        create_tables(conn)
+        conn.close()
     else:
         print("Error! Cannot create the database connection.")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
